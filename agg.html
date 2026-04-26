@@ -1,0 +1,106 @@
+><!DOCTYPE html>
+<html>
+<head>
+  <title>Agregar Reporte</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    input, select { width: 100%; padding: 8px; margin: 5px 0; }
+    button {
+      background: #e63946;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover { background: #c1121f; }
+  </style>
+</head>
+<body>
+
+<h1>Agregar Reporte de Accidente</h1>
+
+<form id="formulario">
+
+Edad:
+<input type="number" id="edad" required>
+
+Usa casco:
+<select id="casco">
+  <option value="si">Sí</option>
+  <option value="no">No</option>
+</select>
+
+Exceso de velocidad:
+<select id="velocidad">
+  <option value="si">Sí</option>
+  <option value="no">No</option>
+</select>
+
+Tipo de incidente:
+<input type="text" id="tipo" required>
+
+Lesiones:
+<input type="text" id="lesiones" required>
+
+Ubicación:
+<input type="text" id="ubicacion" required>
+
+Fecha del accidente:
+<input type="date" id="fecha" required>
+
+Link de evidencia (opcional):
+<input type="url" id="link" placeholder="https://...">
+
+<br><br>
+<button type="submit">Guardar Reporte</button>
+
+</form>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from 
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAsgFTWQZ0FxjJzz2ANi8JHFb26t4yHEe0",
+  authDomain: "revista-motos-e2.firebaseapp.com",
+  projectId: "revista-motos-e2",
+  storageBucket: "revista-motos-e2.firebasestorage.app",
+  messagingSenderId: "563468243518",
+  appId: "1:563468243518:web:ef441d3cc6ef139594b76f",
+  measurementId: "G-W7G2M2XFGJ"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+document.getElementById("formulario").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const link = document.getElementById("link").value.trim();
+
+  await addDoc(collection(db, "Reportes"), {
+    Edad: parseInt(document.getElementById("edad").value),
+    Usa_Casco: document.getElementById("casco").value,
+    Exceso_Velocidad: document.getElementById("velocidad").value,
+    Tipo_Incidente: document.getElementById("tipo").value,
+    Lesiones: document.getElementById("lesiones").value,
+    Ubicación: document.getElementById("ubicacion").value,
+
+    // 🔥 YA CORREGIDO
+    Fecha_Accidente: new Date(document.getElementById("fecha").value),
+
+    Fecha_Registro: serverTimestamp(),
+    Link: link || null
+  });
+
+  alert("✅ Reporte guardado");
+  document.getElementById("formulario").reset();
+});
+
+</script>
+
+</body>
+</html>
